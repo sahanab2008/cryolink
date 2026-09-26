@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { homePathForRole } from "@/lib/auth/permissions";
 import type { UserRole } from "@prisma/client";
 
 type GoogleSignInButtonProps = {
@@ -24,7 +25,7 @@ export function GoogleSignInButton({ role, disabled }: GoogleSignInButtonProps) 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role }),
       });
-      await signIn("google", { callbackUrl: "/" });
+      await signIn("google", { callbackUrl: homePathForRole(role) });
     } finally {
       setLoading(false);
     }

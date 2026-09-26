@@ -56,7 +56,7 @@ export function RoleEntryScreen() {
                 style={{ animationDelay: `${200 + index * 90}ms` }}
               >
                 <Link
-                  href={`/login?role=${entry.role}`}
+                  href={`/login?role=${encodeURIComponent(entry.role)}`}
                   className={cn(
                     "group flex h-full flex-col rich-card p-5",
                     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"

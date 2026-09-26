@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 import { CryoLinkLogo } from "@/components/brand/cryolink-logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { LogoutButton } from "@/components/auth/logout-button";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -23,7 +24,8 @@ export default async function FieldLayout({ children }: { children: React.ReactN
         <header className="flex items-center justify-between border-b border-border/80 bg-surface/90 px-4 py-4 backdrop-blur-md">
           <CryoLinkLogo compact href="/field/home" />
           <div className="flex items-center gap-2">
-            <span className="max-w-[10rem] truncate text-sm text-muted-foreground">{session.name}</span>
+            <span className="max-w-[8rem] truncate text-sm text-muted-foreground sm:max-w-[10rem]">{session.name}</span>
+            <LogoutButton />
             <ThemeToggle />
           </div>
         </header>

@@ -1,10 +1,7 @@
 "use client";
 
-import { LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { LogoutButton } from "@/components/auth/logout-button";
 
 type HqHeaderProps = {
   title: string;
@@ -13,13 +10,6 @@ type HqHeaderProps = {
 };
 
 export function HqHeader({ title, subtitle, userName }: HqHeaderProps) {
-  const router = useRouter();
-
-  async function logout() {
-    await signOut({ callbackUrl: "/" });
-    router.refresh();
-  }
-
   return (
     <header className="animate-rise-in flex flex-col gap-4 border-b border-border bg-surface/95 px-8 py-6 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
       <div>
@@ -32,10 +22,7 @@ export function HqHeader({ title, subtitle, userName }: HqHeaderProps) {
           <p className="hidden text-sm text-text-secondary sm:block">{userName}</p>
         ) : null}
         <ThemeToggle />
-        <Button type="button" variant="secondary" size="sm" onClick={logout} className="gap-2">
-          <LogOut className="h-4 w-4" aria-hidden />
-          Sign out
-        </Button>
+        <LogoutButton />
       </div>
     </header>
   );

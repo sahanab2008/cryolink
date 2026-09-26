@@ -41,5 +41,7 @@ export async function buildSessionUser(userId: string): Promise<SessionUser | nu
 export async function getSession(): Promise<SessionUser | null> {
   const session = await auth();
   if (!session?.user?.id) return null;
-  return buildSessionUser(session.user.id);
+  const user = await buildSessionUser(session.user.id);
+  if (!user) return null;
+  return user;
 }

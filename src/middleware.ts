@@ -1,12 +1,26 @@
 import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 import { authConfig } from "@/auth.config";
+import { homePathForRole } from "@/lib/auth/permissions";
+import type { UserRole } from "@prisma/client";
 
 const { auth } = NextAuth(authConfig);
+
+function isProtectedPath(pathname: string) {
+  return pathname.startsWith("/hq") || pathname.startsWith("/field") || pathname.startsWith("/family");
+}
+
+function withNoStore(response: NextResponse) {
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  response.headers.set("Pragma", "no-cache");
+  return response;
+}
 
 export default auth((request) => {
   const { pathname } = request.nextUrl;
   const session = request.auth;
+  const role = session?.user?.role as UserRole | undefined;
+  const hasSession = Boolean(session?.user?.id && role);
 
   const isPublic =
     pathname === "/" ||
@@ -17,15 +31,19 @@ export default auth((request) => {
     pathname === "/api/register" ||
     pathname.startsWith("/api/oauth");
 
+  if (hasSession && (pathname === "/login" || pathname.startsWith("/signup"))) {
+    return NextResponse.redirect(new URL(homePathForRole(role!), request.url));
+  }
+
+  // "/" redirect when logged in is handled by the server home page (getSession + DB check).
+
   if (isPublic) {
     return NextResponse.next();
   }
 
-  if (!session?.user?.id) {
+  if (!hasSession) {
     return NextResponse.redirect(new URL("/", request.url));
   }
-
-  const role = session.user.role;
 
   if (pathname.startsWith("/hq") && role !== "OPERATIONS_OFFICIAL") {
     return NextResponse.redirect(new URL("/", request.url));
@@ -37,6 +55,10 @@ export default auth((request) => {
 
   if (pathname.startsWith("/family") && role !== "FAMILY_NOK") {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (isProtectedPath(pathname)) {
+    return withNoStore(NextResponse.next());
   }
 
   return NextResponse.next();
