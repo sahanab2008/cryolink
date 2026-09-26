@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node scripts/sync-prisma-provider.mjs && prisma generate && next dev",
     "build": "node scripts/sync-prisma-provider.mjs && prisma generate && next build",
-    "vercel-build": "node scripts/sync-prisma-provider.mjs && prisma generate && tsx scripts/vercel-prebuild.ts && next build",
+    "vercel-build": "tsx scripts/vercel-prebuild.ts && next build",
     "start": "next start",
     "start:prod": "tsx scripts/ensure-database.ts && next start",
     "lint": "eslint",
