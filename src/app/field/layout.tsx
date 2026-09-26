@@ -20,16 +20,22 @@ export default async function FieldLayout({ children }: { children: React.ReactN
 
   return (
     <FieldSyncProvider>
-      <div className="flex min-h-dvh flex-col bg-bg pb-24">
-        <header className="flex items-center justify-between border-b border-border/80 bg-surface/90 px-4 py-4 backdrop-blur-md">
-          <CryoLinkLogo compact href="/field/home" />
-          <div className="flex items-center gap-2">
-            <span className="max-w-[8rem] truncate text-sm text-muted-foreground sm:max-w-[10rem]">{session.name}</span>
+      <div className="flex min-h-dvh flex-col bg-bg pb-[calc(5.5rem+env(safe-area-inset-bottom))]">
+        <header className="flex items-center justify-between gap-2 border-b border-border/80 bg-surface/90 shell-main backdrop-blur-md max-lg:pt-[max(0.75rem,env(safe-area-inset-top))]">
+          <div className="min-w-0">
+            <CryoLinkLogo compact href="/field/home" />
+          </div>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <span className="hidden max-w-[10rem] truncate text-sm text-muted-foreground lg:inline">
+              {session.name}
+            </span>
             <LogoutButton />
             <ThemeToggle />
           </div>
         </header>
-        <main className="flex-1 px-4 py-6">{children}</main>
+        <main className="shell-main flex-1">
+          <div className="shell-content max-lg:max-w-full lg:max-w-3xl">{children}</div>
+        </main>
         <FieldBottomNav />
       </div>
     </FieldSyncProvider>

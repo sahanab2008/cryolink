@@ -20,6 +20,11 @@
   --radius-control: 6px;
   --shadow-soft: 0 4px 24px rgba(61, 122, 184, 0.1);
   --shadow-card: 0 1px 2px rgba(61, 122, 184, 0.06), 0 12px 32px rgba(61, 122, 184, 0.08);
+  /* Layout: mobile (<1024px) defaults; laptop overrides below */
+  --layout-gutter-x: 1rem;
+  --layout-gutter-y: 1.25rem;
+  --layout-content-max: 100%;
+  --layout-page-title: 1.375rem;
 }
 
 .dark {
@@ -76,6 +81,57 @@ body {
   color: var(--text-primary);
   font-family: var(--font-plex-sans), system-ui, sans-serif;
   min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Laptop breakpoint (1024px+) — distinct from mobile layout */
+@media (min-width: 1024px) {
+  :root,
+  .light,
+  .dark {
+    --layout-gutter-x: 2rem;
+    --layout-gutter-y: 2rem;
+    --layout-content-max: 88rem;
+    --layout-page-title: 1.875rem;
+  }
+}
+
+.shell-main {
+  padding-inline: var(--layout-gutter-x);
+  padding-block: var(--layout-gutter-y);
+}
+
+.shell-content {
+  width: 100%;
+  max-width: var(--layout-content-max);
+  margin-inline: auto;
+}
+
+/* Hide on laptop (1024px+). Does not force display on mobile — pair with flex/block as needed. */
+@media (min-width: 1024px) {
+  .layout-mobile-only {
+    display: none !important;
+  }
+}
+
+.layout-laptop-only {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .layout-laptop-only {
+    display: block;
+  }
+
+  .layout-laptop-inline {
+    display: inline;
+  }
+}
+
+/* Wide data tables scroll inside the card on small screens */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .font-display {
@@ -148,10 +204,12 @@ body {
     border-color 0.2s ease;
 }
 
-.rich-card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--cyan) 45%, var(--border));
-  box-shadow: var(--shadow-soft);
+@media (hover: hover) {
+  .rich-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--cyan) 45%, var(--border));
+    box-shadow: var(--shadow-soft);
+  }
 }
 
 /* Backdrop orbs */

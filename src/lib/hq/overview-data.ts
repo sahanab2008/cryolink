@@ -3,6 +3,23 @@ import { fetchAttentionItems, fetchResourceHealth } from "@/lib/hq/attention";
 import { fetchActivityFeed } from "@/lib/hq/activity-feed";
 
 export async function fetchOverviewBundle(expeditionIds: string[]) {
+  if (expeditionIds.length === 0) {
+    return {
+      attention: [],
+      feed: [],
+      resource: {
+        inventoryLow: 0,
+        inventoryCritical: 0,
+        assetsMaintenance: 0,
+        assetsOperational: 0,
+      },
+      expedition: null,
+      missionDay: null,
+      missionTotalDays: null,
+      positionRows: [],
+    };
+  }
+
   const [attention, feed, resource, expedition] = await Promise.all([
     fetchAttentionItems(expeditionIds),
     fetchActivityFeed(expeditionIds),

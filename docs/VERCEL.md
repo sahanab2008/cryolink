@@ -21,7 +21,7 @@ Vercel is serverless — **SQLite files do not work**. Use **Neon Postgres** (fr
 |----------|--------|
 | `AUTH_SECRET` | Random string (`openssl rand -base64 32`) |
 | `AUTH_URL` | `https://YOUR-PROJECT.vercel.app` (no trailing slash) |
-| `DATABASE_URL` | From Neon (set automatically if linked) |
+| `DATABASE_URL` | Real Neon URL — **not** a placeholder like `db.example.com`. If Neon integration added `POSTGRES_PRISMA_URL` / `POSTGRES_URL`, keep them; the app uses those at runtime too. |
 Optional Google OAuth: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (callback: `https://YOUR-PROJECT.vercel.app/api/auth/callback/google`).
 
 ## 4. Deploy

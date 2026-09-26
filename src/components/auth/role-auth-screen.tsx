@@ -135,8 +135,8 @@ export function RoleAuthScreen({ initialMode = "signin" }: { initialMode?: AuthM
       >
         {loading ? "Signing in…" : "Demo login"}
       </Button>
-      <p className="mt-2 text-center font-mono text-[10px] text-text-secondary">
-        Uses {entry.demoEmail} / {DEMO_PASSWORD}
+      <p className="mt-2 text-center font-mono text-[10px] leading-relaxed text-text-secondary">
+        Uses <span className="break-all">{entry.demoEmail}</span> / {DEMO_PASSWORD}
       </p>
 
       <div className="mt-6 space-y-4">
@@ -149,7 +149,7 @@ export function RoleAuthScreen({ initialMode = "signin" }: { initialMode?: AuthM
       </div>
 
       {mode === "signin" ? (
-        <form onSubmit={onSignInSubmit} className="mt-4 space-y-4 rich-card p-6">
+        <form onSubmit={onSignInSubmit} className="mt-4 space-y-4 rich-card p-4 sm:p-6">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -178,7 +178,7 @@ export function RoleAuthScreen({ initialMode = "signin" }: { initialMode?: AuthM
           </Button>
         </form>
       ) : (
-        <form onSubmit={onSignUpSubmit} className="mt-4 space-y-4 rich-card p-6">
+        <form onSubmit={onSignUpSubmit} className="mt-4 space-y-4 rich-card p-4 sm:p-6">
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -230,14 +230,15 @@ function RoleAuthLayout({ roleEntry, children }: { roleEntry: RoleEntryConfig; c
   return (
     <div className="relative min-h-dvh bg-bg">
       <CryoLinkBackdrop />
-      <header className="relative z-10 flex items-center justify-between border-b border-border/80 bg-surface/90 px-6 py-4 backdrop-blur-md">
+      <header className="relative z-10 flex items-center justify-between border-b border-border/80 bg-surface/90 shell-main backdrop-blur-md max-lg:pt-[max(0.75rem,env(safe-area-inset-top))]">
         <Link href="/" className="flex items-center gap-2 text-sm text-text-secondary transition-colors hover:text-cyan">
-          <ArrowLeft className="h-4 w-4" aria-hidden />
-          Role selection
+          <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
+          <span className="hidden lg:inline">Role selection</span>
+          <span className="lg:hidden">Back</span>
         </Link>
         <ThemeToggle />
       </header>
-      <div className="relative z-10 mx-auto max-w-md px-4 py-10 animate-rise-in">
+      <div className="relative z-10 mx-auto w-full max-w-md shell-main animate-rise-in max-lg:max-w-full lg:max-w-md">
         <CryoLinkLogo href="/" />
         <p className="mt-2 text-sm text-text-secondary">{roleEntry.title}</p>
         <div className="mt-6 flex items-start gap-3 rich-card p-4">

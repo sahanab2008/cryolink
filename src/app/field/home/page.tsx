@@ -21,7 +21,7 @@ export default async function FieldHomePage() {
   return (
     <div className="mx-auto max-w-lg space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-semibold tracking-tight text-text-primary">Field home</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">Field home</h1>
         <p className="mt-2 text-sm text-text-secondary">
           {dashboard.personnel.teamName ?? "Unassigned"} · {dayLabel}
         </p>

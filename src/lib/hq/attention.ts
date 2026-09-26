@@ -122,6 +122,15 @@ export async function fetchAttentionItems(expeditionIds: string[]): Promise<Atte
 }
 
 export async function fetchResourceHealth(expeditionIds: string[]) {
+  if (expeditionIds.length === 0) {
+    return {
+      inventoryLow: 0,
+      inventoryCritical: 0,
+      assetsMaintenance: 0,
+      assetsOperational: 0,
+    };
+  }
+
   const inventory = await listInventoryForExpeditions(expeditionIds);
   const low = inventory.filter((i) => i.stockLevel === "LOW").length;
   const critical = inventory.filter((i) => i.stockLevel === "CRITICAL").length;

@@ -13,7 +13,9 @@ export async function HqPageShell({ title, subtitle, children }: HqPageShellProp
   return (
     <>
       <HqHeader title={title} subtitle={subtitle} userName={session?.name} />
-      <main className="animate-in flex-1 px-8 py-8">{children}</main>
+      <main className="animate-in shell-main flex-1">
+        <div className="shell-content">{children}</div>
+      </main>
     </>
   );
 }

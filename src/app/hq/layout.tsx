@@ -1,4 +1,4 @@
-import { HqSidebar } from "@/components/layout/hq-sidebar";
+import { HqNavProvider } from "@/components/layout/hq-nav";
 import { getSession } from "@/lib/auth/session";
 import { redirect } from "next/navigation";
 
@@ -8,10 +8,5 @@ export default async function HqLayout({ children }: { children: React.ReactNode
     redirect("/");
   }
 
-  return (
-    <div className="flex min-h-dvh bg-bg">
-      <HqSidebar />
-      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
-    </div>
-  );
+  return <HqNavProvider>{children}</HqNavProvider>;
 }

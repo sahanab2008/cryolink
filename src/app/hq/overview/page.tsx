@@ -21,7 +21,7 @@ export default async function HqOverviewPage() {
       <div className="space-y-6">
         <AttentionRequiredPanel items={bundle.attention} />
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-3 max-lg:grid-cols-1 lg:grid-cols-3 lg:gap-4">
           <div className="rich-card animate-rise-in p-4" style={{ animationDelay: "60ms" }}>
             <p className="text-xs font-medium uppercase tracking-wide text-cyan">Expedition</p>
             <p className="mt-2 font-display text-lg font-semibold text-text-primary">
@@ -47,7 +47,7 @@ export default async function HqOverviewPage() {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className="grid gap-4 max-lg:grid-cols-1 lg:grid-cols-2 lg:gap-6">
           <FieldPositionsPanel rows={bundle.positionRows} />
           <ActivityFeedPanel items={bundle.feed} />
         </div>

@@ -32,11 +32,23 @@ const navItems = [
   { href: "/hq/reports", label: "Reports & Audit", icon: FileBarChart },
 ] as const;
 
-export function HqSidebar() {
+type HqSidebarProps = {
+  className?: string;
+  onNavigate?: () => void;
+  "aria-hidden"?: boolean;
+};
+
+export function HqSidebar({ className, onNavigate, "aria-hidden": ariaHidden }: HqSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="hq-sidebar-gradient flex h-full w-64 shrink-0 flex-col border-r border-white/10 text-white shadow-lg">
+    <aside
+      className={cn(
+        "hq-sidebar-gradient flex h-full min-h-dvh w-64 shrink-0 flex-col border-r border-white/10 text-white shadow-lg lg:min-h-0",
+        className
+      )}
+      aria-hidden={ariaHidden}
+    >
       <div className="border-b border-white/15 px-5 py-6">
         <CryoLinkLogo inverted href="/hq/overview" />
         <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-white/70">Operations — HQ</p>
@@ -51,6 +63,7 @@ export function HqSidebar() {
             <Link
               key={href}
               href={href}
+              onClick={onNavigate}
               className={cn(
                 "flex min-h-10 items-center gap-3 px-3 py-2 text-sm font-medium rounded-[2px] transition-colors",
                 active

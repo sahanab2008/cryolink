@@ -31,7 +31,7 @@ function labelFor(type: AttentionSignalType) {
 export function AttentionRequiredPanel({ items }: { items: AttentionItem[] }) {
   return (
     <section className="rich-card overflow-hidden" aria-labelledby="attention-required-heading">
-      <header className="hq-sidebar-gradient flex items-center justify-between border-b border-white/15 px-4 py-3">
+      <header className="hq-sidebar-gradient flex flex-wrap items-center justify-between gap-2 border-b border-white/15 px-4 py-3">
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-amber" strokeWidth={2} aria-hidden />
           <h2 id="attention-required-heading" className="font-display text-base font-semibold text-white">
