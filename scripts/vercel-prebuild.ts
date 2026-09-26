@@ -1,64 +1,54 @@
 import { execSync } from "node:child_process";
 import { PrismaClient } from "@prisma/client";
 
-/** Vercel + Neon often expose POSTGRES_* instead of DATABASE_URL */
-function resolveDatabaseUrl(): string | undefined {
-  const candidates = [
-    process.env.DATABASE_URL,
-    process.env.POSTGRES_PRISMA_URL,
-    process.env.POSTGRES_URL,
-  ].filter((v): v is string => Boolean(v && v.startsWith("postgres")));
-  return candidates[0];
-}
-
-/** db push needs a direct (non-pooled) connection on Neon */
-function resolvePushUrl(fallback: string): string {
-  const direct = [
-    process.env.DIRECT_URL,
-    process.env.POSTGRES_URL_NON_POOLING,
-    process.env.DATABASE_URL_UNPOOLED,
-  ].find((v) => v && v.startsWith("postgres"));
-  return direct ?? fallback;
+function resolvePostgresDatabaseUrl(): { url: string; source: string } | null {
+  const keys = [
+    "POSTGRES_URL_NON_POOLING",
+    "POSTGRES_URL",
+    "DATABASE_URL",
+    "POSTGRES_PRISMA_URL",
+  ];
+  for (const key of keys) {
+    const value = process.env[key];
+    if (value && value.startsWith("postgres")) {
+      return { url: value, source: key };
+    }
+  }
+  return null;
 }
 
 /**
- * Runs on Vercel during `vercel-build`: apply schema and seed demo users when empty.
+ * Vercel build: sync schema, push to Postgres, seed if empty.
  */
 async function main() {
-  const databaseUrl = resolveDatabaseUrl();
-  if (!databaseUrl) {
+  const resolved = resolvePostgresDatabaseUrl();
+  if (!resolved) {
     console.error(
-      "[vercel-prebuild] No PostgreSQL URL found. In Vercel: Storage → Neon → link to project, then enable env vars for Production AND Build."
-    );
-    console.error(
-      "[vercel-prebuild] Expect DATABASE_URL or POSTGRES_PRISMA_URL / POSTGRES_URL (starts with postgresql://)."
+      "[vercel-prebuild] Missing PostgreSQL URL. In Vercel → Storage → Neon → connect to project.\n" +
+        "Expected one of: POSTGRES_URL_NON_POOLING, POSTGRES_URL, DATABASE_URL, POSTGRES_PRISMA_URL"
     );
     process.exit(1);
   }
 
-  process.env.DATABASE_URL = databaseUrl;
+  console.log(`[vercel-prebuild] Using ${resolved.source} for schema push`);
 
-  execSync("node scripts/sync-prisma-provider.mjs", { stdio: "inherit" });
-  execSync("npx prisma generate", { stdio: "inherit" });
+  const env = {
+    ...process.env,
+    DATABASE_URL: resolved.url,
+  };
 
-  const pushUrl = resolvePushUrl(databaseUrl);
-  console.log("[vercel-prebuild] Running prisma db push…");
-  try {
-    execSync("npx prisma db push --accept-data-loss", {
-      stdio: "inherit",
-      env: { ...process.env, DATABASE_URL: pushUrl },
-    });
-  } catch (err) {
-    console.error("[vercel-prebuild] prisma db push failed. Use Neon direct URL as POSTGRES_URL_NON_POOLING if needed.");
-    throw err;
-  }
+  execSync("node scripts/sync-prisma-provider.mjs", { stdio: "inherit", env });
+  execSync("npx prisma generate", { stdio: "inherit", env });
+  execSync("npx prisma db push --accept-data-loss", { stdio: "inherit", env });
 
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    datasources: { db: { url: resolved.url } },
+  });
   try {
     const userCount = await prisma.user.count();
     if (userCount === 0) {
       console.log("[vercel-prebuild] Empty database — running seed…");
-      execSync("npx tsx prisma/seed.ts", { stdio: "inherit" });
+      execSync("npx tsx prisma/seed.ts", { stdio: "inherit", env });
     } else {
       console.log(`[vercel-prebuild] ${userCount} user(s) present — skipping seed.`);
     }

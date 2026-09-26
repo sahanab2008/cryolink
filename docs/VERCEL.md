@@ -5,8 +5,9 @@
 Vercel is serverless — **SQLite files do not work**. Use **Neon Postgres** (free):
 
 1. In [Vercel](https://vercel.com) → your project → **Storage** → **Create** → **Neon** (or connect [neon.tech](https://neon.tech)).
-2. Attach the database to the project. Vercel usually sets **`POSTGRES_PRISMA_URL`**, **`POSTGRES_URL`**, and **`POSTGRES_URL_NON_POOLING`** (build uses these automatically).
-3. In **Settings → Environment Variables**, ensure Neon vars apply to **Production**, **Preview**, and **Build** (not Runtime only).
+2. Attach the database to the project. Vercel/Neon usually sets **`POSTGRES_URL_NON_POOLING`**, **`POSTGRES_URL`**, and/or **`DATABASE_URL`** — the build uses the non-pooled URL for `prisma db push` when available.
+
+3. In **Settings → Environment Variables**, ensure those Postgres variables apply to **Production**, **Preview**, and **Build** (not runtime-only).
 
 ## 2. Import the repo
 
@@ -20,8 +21,7 @@ Vercel is serverless — **SQLite files do not work**. Use **Neon Postgres** (fr
 |----------|--------|
 | `AUTH_SECRET` | Random string (`openssl rand -base64 32`) |
 | `AUTH_URL` | `https://YOUR-PROJECT.vercel.app` (no trailing slash) |
-| `DATABASE_URL` | Optional if Neon linked — or copy `POSTGRES_PRISMA_URL` into `DATABASE_URL` |
-| `POSTGRES_URL_NON_POOLING` | Set automatically by Vercel Neon (used for `db push` at build) |
+| `DATABASE_URL` | From Neon (set automatically if linked) |
 Optional Google OAuth: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (callback: `https://YOUR-PROJECT.vercel.app/api/auth/callback/google`).
 
 ## 4. Deploy
