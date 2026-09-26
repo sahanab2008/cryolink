@@ -31,15 +31,20 @@ function loadDatabaseUrlFromDotenv() {
 }
 
 const databaseUrl = loadDatabaseUrlFromDotenv();
+const onVercel = Boolean(process.env.VERCEL);
 
-if (!databaseUrl) {
-  console.error(
-    "[sync-prisma-provider] No PostgreSQL URL found. On Vercel: Storage → Neon → link DB, or set DATABASE_URL / POSTGRES_URL."
+if (!databaseUrl && onVercel) {
+  console.warn(
+    "[sync-prisma-provider] No Postgres URL yet — using postgresql client for build only. Link Neon in Storage, then redeploy."
   );
+}
+
+if (!databaseUrl && !onVercel) {
+  console.error("[sync-prisma-provider] No DATABASE_URL. Use file:./dev.db locally or set Postgres on the host.");
   process.exit(1);
 }
 
-const usePostgres = databaseUrl.startsWith("postgres");
+const usePostgres = !databaseUrl || databaseUrl.startsWith("postgres");
 
 const schemaPath = path.join(process.cwd(), "prisma", "schema.prisma");
 let schema = fs.readFileSync(schemaPath, "utf8");
@@ -62,5 +67,9 @@ if (usePostgres) {
 }
 
 fs.writeFileSync(schemaPath, schema);
-const preview = databaseUrl.length > 28 ? `${databaseUrl.slice(0, 28)}…` : databaseUrl;
+const preview = databaseUrl
+  ? databaseUrl.length > 28
+    ? `${databaseUrl.slice(0, 28)}…`
+    : databaseUrl
+  : "(none — redeploy after Neon)";
 console.log(`[sync-prisma-provider] ${usePostgres ? "postgresql" : "sqlite"} (${preview})`);
