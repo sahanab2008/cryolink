@@ -11,7 +11,6 @@ function isBadAuthUrl(url: string | undefined) {
   const lower = url.toLowerCase();
   if (lower.includes("localhost:10000")) return true;
   if (lower === "http://localhost:10000") return true;
-  if (process.env.VERCEL_URL && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/|$)/.test(lower)) return true;
   // Render internal binding — not a browser URL
   if (/localhost:\d+/.test(lower) && process.env.RENDER) return true;
   if (process.env.NODE_ENV === "development" && lower.includes("localhost") && !lower.includes(":3000") && !lower.includes(":3001")) {
