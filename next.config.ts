@@ -10,7 +10,8 @@ if (process.env.RENDER_EXTERNAL_URL) {
   }
 } else if (process.env.VERCEL_URL) {
   const external = `https://${process.env.VERCEL_URL.replace(/\/$/, "")}`;
-  if (!process.env.AUTH_URL) {
+  const auth = process.env.AUTH_URL ?? "";
+  if (!auth || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/|$)/i.test(auth)) {
     process.env.AUTH_URL = external;
     process.env.NEXTAUTH_URL = external;
   }
